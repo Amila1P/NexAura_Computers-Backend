@@ -4,10 +4,13 @@ import userRouter from "./routers/userRouter.js";
 import authenticateUser from "./middlewares/authentication.js";
 import productRouter from "./routers/productRouter.js";
 import cors from "cors";
+import dotenv from "dotenv";
+
+dotenv.config();   // Load environment variables from .env file
 
 const app = express();
 let port = 3000;
-const mongodbURI = "mongodb+srv://admin:admin123@cluster0.nobsocy.mongodb.net/i_computer?appName=Cluster0"
+const mongodbURI = process.env.MONGO_URI
 
 mongoose.connect(mongodbURI).then(() => {
     console.log("Connected to MongoDB");
@@ -21,8 +24,8 @@ app.use(express.json());    // Middleware to parse JSON bodies
 
 app.use(authenticateUser);
 
-app.use("/users", userRouter);
-app.use("/products", productRouter)
+app.use("/api/users", userRouter);
+app.use("/api/products", productRouter)
 
 
 app.listen(port, () => {
