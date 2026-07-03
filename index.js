@@ -3,6 +3,7 @@ import mongoose from "mongoose";   // Importing Mongoose for MongoDB interaction
 import userRouter from "./routers/userRouter.js";
 import authenticateUser from "./middlewares/authentication.js";
 import productRouter from "./routers/productRouter.js";
+import cors from "cors";
 
 const app = express();
 let port = 3000;
@@ -14,6 +15,7 @@ mongoose.connect(mongodbURI).then(() => {
     console.error("Error connecting to MongoDB:", error);
 });
 
+app.use(cors());    // Middleware to enable CORS
 
 app.use(express.json());    // Middleware to parse JSON bodies
 
