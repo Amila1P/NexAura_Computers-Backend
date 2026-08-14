@@ -49,6 +49,11 @@ const orderSchema = new mongoose.Schema(
             type : Number,
             required : true
         },
+        date : {
+            type : Date,
+            required : true,
+            default : Date.now
+        },
         items : [
             {
                 productId : {
