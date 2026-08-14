@@ -19,10 +19,20 @@ export default async function createOrder(req, res) {
         city : req.body.city,
         state : req.body.state,
         postalCode : req.body.postalCode,
+        phone : req.body.phone,
         country : req.body.country,
         total = 0,
         item : []
     }
+
+    if(req.body.firstName !=null &&  req.body.firstName != ""){
+        orderData.firstName = req.body.firstName
+    }
+    if(req.body.lastName !=null &&  req.body.lastName != ""){
+        orderData.lastName = req.body.lastName
+    }
+
+
     try{
         const lastOrder = await Order.findOne().sort({date : -1})
         if(lastOrder != null){
