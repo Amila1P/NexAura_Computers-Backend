@@ -7,6 +7,7 @@ import authenticateUser from "./middlewares/authentication.js";
 import productRouter from "./routers/productRouter.js";
 import cors from "cors";
 import dotenv from "dotenv";
+import orderRouter from "./routers/orderRouter.js";
 
 dotenv.config();   // Load environment variables from .env file
 
@@ -93,6 +94,7 @@ app.use(authenticateUser);
 
 app.use("/api/users", userRouter);
 app.use("/api/products", productRouter)
+app.use("api/orders", orderRouter);
 
 // Delay listening until MongoDB is reachable so the server does not start in a broken state.
 async function startServer() {
