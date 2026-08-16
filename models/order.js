@@ -2,6 +2,11 @@ import mongoose from "mongoose";
 
 const orderSchema = new mongoose.Schema(
     {
+        orderId: {
+            type: String,
+            required: true,
+            unique: true
+        },
         email : {
             type : String,
             required : true
@@ -53,6 +58,10 @@ const orderSchema = new mongoose.Schema(
             type : Date,
             required : true,
             default : Date.now
+        },
+        phone : {
+            type : String,
+            required : true
         },
         items : [
             {

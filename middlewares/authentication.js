@@ -16,7 +16,7 @@ export default function authenticateUser(req, res, next){
                     console.log(decoded)
 
                     if(decoded == null){
-                        res.json(
+                        res.status(401).json(
                             {
                                 message : "Invalid token Please Login Again"
                             }

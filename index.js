@@ -94,7 +94,7 @@ app.use(authenticateUser);
 
 app.use("/api/users", userRouter);
 app.use("/api/products", productRouter)
-app.use("api/orders", orderRouter);
+app.use("/api/orders", orderRouter);
 
 // Delay listening until MongoDB is reachable so the server does not start in a broken state.
 async function startServer() {
