@@ -57,9 +57,9 @@ export async function createOrder(req, res) {
             } else {
                 orderData.items.push({
                     productId: product.productId,
-                    name: product.name,
+                    name: product.name || product.productName,
                     price: product.price,
-                    image: product.images[0], 
+                    image: product.image || (product.images && product.images[0]), 
                     quantity: req.body.items[i].quantity
                 });
             }
@@ -68,6 +68,10 @@ export async function createOrder(req, res) {
 
         const newOrder = new Order(orderData);
         await newOrder.save(); 
+
+
+        console.log(newOrder.orderId + " has been created successfully.");
+
         
         res.status(201).json({ message: "Order created successfully", orderId: orderId });
 
