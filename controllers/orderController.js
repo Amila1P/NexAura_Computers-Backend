@@ -132,3 +132,21 @@ export default async function getOrders(req, res){
         res.status(500).json({ message: "Internal server error", error: error.message });
     }
 }
+
+export async function updateOrderStatusAndNotes(req, res){
+
+    if(req.user || req.user.isAdmin){
+        try{
+            const  ordeId = req.params.orderId;
+            
+            await Order.findOneAndUpdate(
+                { orderId: ordeId },
+                { status: req.body.status, notes: req.body.notes }
+            )
+            res.status(200).json({ message: "Order status and notes updated successfully" });
+        }catch(error){
+            console.error("Error updating order status and notes:", error);
+            res.status(500).json({ message: "Internal server error", error: error.message });
+        }
+    }
+}
