@@ -87,6 +87,72 @@ export async function loginUser(req, res){
     }
 }
 
+export async function getUserData(req, res){
+    if(req.user == null){
+        res.status(401).json({
+            message : "Unauthorized"
+        })
+    }else{
+        res.json(req.user)
+    }
+}
+
+export async function updateUserData(req, res){
+    if(req.user == null){
+        res.status(401).json({
+            message : "Unauthorized"
+        })
+    }else{
+        try{
+            await User.findOneAndUpdate(
+                {email : req.user.email},
+                {firstName : req.body.firstName, lastName : req.body.lastName, profilePicture : req.body.profilePicture}
+            )
+            const updatedUser = await User.findOne({email : req.user.email})
+            const token = jwt.sign({
+                email : updatedUser.email,
+                firstName : updatedUser.firstName,
+                lastName : updatedUser.lastName,
+                isAdmin : updatedUser.isAdmin,
+                isBlocked : updatedUser.isBlocked,
+                isEmailVerified : updatedUser.isEmailVerified,
+                profilePicture : updatedUser.profilePicture
+            }, process.env.JWT_SECRET, { expiresIn : "48h"})
+            
+            res.json({
+                message : "User data updated successfully",
+                token : token
+            })
+        }catch(error){
+            res.status(500).json({
+                message : "Error updating user data"
+            })
+        }
+    }
+}
+
+export async function changePassword(req, res){
+    if(req.user == null){
+        res.status(401).json({
+            message : "Unauthorized"
+        })
+    }
+    try{
+        const hashedPassword = bcrypt.hashSync(req.body.newPassword, 10)
+        await User.findOneAndUpdate(
+            {email : req.user.email},
+            {password : hashedPassword}
+        )
+        res.json({
+            message : "Password changed successfully"
+        })
+    }catch(error){
+        res.status(500).json({
+            message : "Error changing password"
+        })
+    }
+}
+
 
 export default function isAdmin(req){
     if(req.user == null){
