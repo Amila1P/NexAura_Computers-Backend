@@ -7,14 +7,20 @@ dotenv.config()
 export async function createUser(req, res){
 
     try{
+        const { email, password, firstName, lastName } = req.body
 
-        const passwordHash = bcrypt.hashSync(req.body.password, 10)
-        console.log(passwordHash)
+        if (!email || !password || !firstName || !lastName) {
+            return res.status(400).json({
+                message : "Email, password, first name, and last name are required"
+            })
+        }
+
+        const passwordHash = bcrypt.hashSync(password, 10)
 
         const newUser = new User({
-        email : req.body.email,
-        firstName : req.body.firstName,
-        lastName : req.body.lastName,
+        email : email,
+        firstName : firstName,
+        lastName : lastName,
         password : passwordHash
         })
 
@@ -24,6 +30,12 @@ export async function createUser(req, res){
             message : "User created successfully"
         })
     }catch(error){
+        if (error.code === 11000) {
+            return res.status(409).json({
+                message : "Email already exists"
+            })
+        }
+
         return res.status(500).json(
             {
                 message : "Error creating user"
