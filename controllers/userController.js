@@ -182,33 +182,36 @@ export async function googleLogin(req, res){
             { email : response.data.email}
         )
         if(user == null){
+            // Guard against Google accounts that have no family_name set
             const newUser = new User({
                 email: response.data.email,
                 firstName: response.data.given_name,
-                lastName: response.data.family_name,
+                lastName: response.data.family_name || response.data.given_name,
                 password : "googlelogin",
                 isEmailVerified : true,
                 profilePicture : response.data.picture
             })
             await newUser.save()
 
-                const token = jwt.sign({
-                    email : updatedUser.email,
-                    firstName : updatedUser.firstName,
-                    lastName : updatedUser.lastName,
-                    isAdmin : updatedUser.isAdmin,
-                    isBlocked : updatedUser.isBlocked,
-                    isEmailVerified : updatedUser.isEmailVerified,
-                    profilePicture : updatedUser.profilePicture
-                }, 
-                process.env.JWT_SECRET, 
-                { expiresIn : "48h"})
+            // Bug fix: was incorrectly using `updatedUser` (never defined here).
+            // Correctly sign the token using `newUser` instead.
+            const token = jwt.sign({
+                email : newUser.email,
+                firstName : newUser.firstName,
+                lastName : newUser.lastName,
+                isAdmin : newUser.isAdmin,
+                isBlocked : newUser.isBlocked,
+                isEmailVerified : newUser.isEmailVerified,
+                profilePicture : newUser.profilePicture
+            }, 
+            process.env.JWT_SECRET, 
+            { expiresIn : "48h"})
 
-                res.json({
-                    message : "User created successfully",
-                    token : token,
-                    isAdmin : false
-                })
+            res.json({
+                message : "User created successfully",
+                token : token,
+                isAdmin : false
+            })
 
         }
         else{
