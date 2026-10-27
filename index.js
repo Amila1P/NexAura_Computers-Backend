@@ -14,6 +14,13 @@ dotenv.config();   // Load environment variables from .env file
 const app = express();
 const port = Number(process.env.PORT) || 3000;
 
+// === COOP Error එක විසඳීමට අලුතින් එකතු කළ කොටස මෙතැනින් ආරම්භ වේ ===
+app.use((req, res, next) => {
+    res.setHeader("Cross-Origin-Opener-Policy", "same-origin-allow-popups");
+    next();
+});
+// ======================================================================
+
 // Allow the app to use explicitly configured DNS servers from the environment.
 const dnsServers = (process.env.DNS_SERVERS || "")
     .split(",")
